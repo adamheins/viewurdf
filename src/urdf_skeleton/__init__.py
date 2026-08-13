@@ -1,1 +1,1 @@
-from .urdf import URDF
+from .urdf import URDFSkeleton
