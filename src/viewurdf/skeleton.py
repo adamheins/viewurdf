@@ -175,9 +175,6 @@ class URDFSkeleton:
         z = np.array([0, 0, 1])
         for link in self.links.values():
 
-            # every link puts this at their parent joint origin
-
-            # TODO need to look at parent joint
             parent = self.joints[link.parent]
             if parent.type_ == "revolute":
                 R = Rotation.align_vectors(parent.axis, z)[0]
@@ -185,8 +182,10 @@ class URDFSkeleton:
                 joint_geom = Cylinder(
                     radius=joint_radius, length=0.03, origin=T, material="red"
                 )
-            else:
+            elif parent.type_ == "fixed":
                 joint_geom = Ball(radius=joint_radius, material="darkgrey")
+            else:
+                joint_geom = Ball(radius=joint_radius, material="red")
             link.geoms = [joint_geom]
 
             # add connections to all child joints
@@ -198,6 +197,7 @@ class URDFSkeleton:
                 if np.isclose(d, 0):
                     continue
 
+                # align between parent and child joints
                 R = Rotation.align_vectors(Δr, z)[0]
                 T = RigidTransform.from_components(translation=0.5 * Δr, rotation=R)
                 link.geoms.append(

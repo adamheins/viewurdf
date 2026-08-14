@@ -1,10 +1,11 @@
 [project]
-name = "urdf-skeleton"
+name = "viewurdf"
 version = "0.1.0"
-description = "Add your description here"
+description = "A dead simple URDF viewer that just works."
 authors = [
   {name = "Adam Heins", email = "mail@adamheins.com"}
 ]
+license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -17,3 +18,9 @@ dependencies = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[project.scripts]
+viewurdf = "viewurdf.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/viewurdf"]
