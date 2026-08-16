@@ -2,22 +2,12 @@
 
 A dead simple URDF viewer that justs works.
 
+## Skeleton Mode
+
 One of the main goals of `viewurdf` is to provide a useful visualization *even
 when the URDF's mesh files are missing.* This is done using *skeleton mode*,
 which removes all existing visual and collision components from the URDF and
 replaces them with simple primitives.
-
-
-## Usage
-
-```
-# basic usage - starts a viser server, view in your browser
-viewurdf <file.urdf>
-
-# if you don't have all the assets referenced in the URDF, use skeleton mode:
-viewurdf -s <file.urdf>
-```
-
 
 ## Install
 
@@ -32,6 +22,16 @@ pipx install viewurdf
 
 # if you must:
 pip install viewurdf
+```
+
+## Usage
+
+```
+# basic usage: starts a viser server, view in your browser
+viewurdf <file.urdf>
+
+# skeleton mode: if you don't have all the assets referenced in the URDF
+viewurdf -s <file.urdf>
 ```
 
 ## License
