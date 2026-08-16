@@ -1,4 +1,4 @@
-![viewurdf](https://github.com/adamheins/viewurdf/blob/main/viewurdf.png "viewurdf")
+![viewurdf](https://raw.githubusercontent.com/adamheins/viewurdf/main/viewurdf.png)
 
 A dead simple URDF viewer that justs works.
 
