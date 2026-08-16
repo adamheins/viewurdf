@@ -1,4 +1,4 @@
-![Alt](viewurdf.png "viewurdf")
+![viewurdf](https://github.com/adamheins/viewurdf/blob/main/viewurdf.png "viewurdf")
 
 A dead simple URDF viewer that justs works.
 
