@@ -1,4 +1,4 @@
-# viewurdf
+![Alt](viewurdf.png "viewurdf")
 
 A dead simple URDF viewer that justs works.
 
