@@ -31,6 +31,7 @@ pip install viewurdf
 viewurdf <file.urdf>
 
 # skeleton mode: if you don't have all the assets referenced in the URDF
+# you can also toggle this on/off after starting
 viewurdf -s <file.urdf>
 ```
 

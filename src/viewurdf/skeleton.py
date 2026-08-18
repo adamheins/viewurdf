@@ -116,7 +116,7 @@ class Ball(Geom):
 
 
 class URDFSkeleton:
-    def __init__(self, dom, link_radius=0.005, joint_radius=0.01):
+    def __init__(self, dom, link_radius=0.005, joint_radius=0.01, joint_length=0.03):
         self.dom = dom
         self.links = {}
         self.joints = {}
@@ -132,18 +132,18 @@ class URDFSkeleton:
                 continue
             self.links[joint.parent].children.append(joint.name)
 
-        self._skeletonize(link_radius, joint_radius)
+        self._skeletonize(link_radius, joint_radius, joint_length)
 
     @classmethod
     def from_string(cls, s, **kwargs):
         dom = parseString(s)
-        return cls(dom)
+        return cls(dom, **kwargs)
 
     @classmethod
     def from_file(cls, path, **kwargs):
         with open(path) as f:
             s = f.read()
-        return cls.from_string(s)
+        return cls.from_string(s, **kwargs)
 
     def to_string(self):
         return self.dom.toxml()
@@ -166,7 +166,7 @@ class URDFSkeleton:
         material.appendChild(color)
         robot.appendChild(material)
 
-    def _skeletonize(self, link_radius, joint_radius):
+    def _skeletonize(self, link_radius, joint_radius, joint_length):
         self._create_material(name="red", rgba="1.0 0.0 0.0 1.0")
         self._create_material(name="darkgrey", rgba="0.25 0.25 0.25 1.0")
 
@@ -180,7 +180,7 @@ class URDFSkeleton:
                 R = Rotation.align_vectors(parent.axis, z)[0]
                 T = RigidTransform.from_rotation(rotation=R)
                 joint_geom = Cylinder(
-                    radius=joint_radius, length=0.03, origin=T, material="red"
+                    radius=joint_radius, length=joint_length, origin=T, material="red"
                 )
             elif parent.type_ == "fixed":
                 joint_geom = Ball(radius=joint_radius, material="darkgrey")

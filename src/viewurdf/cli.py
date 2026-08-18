@@ -1,6 +1,7 @@
 import argparse
 from io import StringIO
 import time
+from threading import Lock
 
 import numpy as np
 import viser
@@ -26,6 +27,8 @@ def main():
     robot = yourdfpy.URDF.load(args.path)
 
     server = viser.ViserServer()
+    server.gui.configure_theme(control_width="large")
+
     robot_base = server.scene.add_frame(
         "/robot", show_axes=True, axes_length=0.5, axes_radius=0.005
     )
@@ -52,15 +55,41 @@ def main():
             slider.on_update(update_cfg)
             sliders.append(slider)
 
-    # TODO: I want to add parameters for the skeleton geometry
     with server.gui.add_folder("Skeleton Mode"):
-        checkbox = server.gui.add_checkbox(label="Enable", initial_value=skeleton_base.visible)
+        checkbox = server.gui.add_checkbox(
+            label="Enable", initial_value=skeleton_base.visible
+        )
 
         def update_vis(_):
             skeleton_base.visible = checkbox.value
             robot_base.visible = not checkbox.value
 
         checkbox.on_update(update_vis)
+
+        link_radius_slider = server.gui.add_slider(
+            "Link radius", 0.001, 0.01, (0.01 - 0.001) / 100, 0.003
+        )
+        joint_radius_slider = server.gui.add_slider(
+            "Joint radius", 0.005, 0.05, (0.05 - 0.005) / 100, 0.01
+        )
+        joint_length_slider = server.gui.add_slider(
+            "Joint length", 0.01, 0.1, (0.1 - 0.01) / 100, 0.03
+        )
+
+        def update_scale(_):
+            nonlocal skeleton
+            skeleton = URDFSkeleton.from_file(
+                args.path,
+                link_radius=link_radius_slider.value,
+                joint_radius=joint_radius_slider.value,
+                joint_length=joint_length_slider.value,
+            )
+            skeleton = yourdfpy.URDF.load(StringIO(skeleton.to_string()))
+            skeleton = ViserUrdf(server, skeleton, root_node_name="/skeleton")
+
+        link_radius_slider.on_update(update_scale)
+        joint_radius_slider.on_update(update_scale)
+        joint_length_slider.on_update(update_scale)
 
     robot.update_cfg(np.array([s.value for s in sliders]))
     skeleton.update_cfg(np.array([s.value for s in sliders]))
