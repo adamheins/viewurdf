@@ -1,9 +1,10 @@
 import argparse
+import importlib
 from io import StringIO
 import time
-from threading import Lock
 
 import numpy as np
+from robot_descriptions._xacro import get_urdf_path
 import viser
 from viser.extras import ViserUrdf
 import yourdfpy
@@ -17,16 +18,30 @@ def main():
     parser.add_argument(
         "-s", "--skeleton", action="store_true", help="Start directly in skeleton mode."
     )
+    parser.add_argument(
+        "-r",
+        "--robot-description",
+        action="store_true",
+        help="Use a model from robot_descriptions.py rather than a local URDF.",
+    )
+    parser.add_argument("--ip", default="0.0.0.0", help="IP address to serve visualizer on.")
+    parser.add_argument("-p", "--port", default="8080", help="Port to serve visualizer on.")
     args = parser.parse_args()
 
+    if args.robot_description:
+        module = importlib.import_module(f"robot_descriptions.{args.path}_description")
+        path = get_urdf_path(module)
+    else:
+        path = args.path
+
     # skeleton URDF
-    skeleton = URDFSkeleton.from_file(args.path)
+    skeleton = URDFSkeleton.from_file(path)
     skeleton = yourdfpy.URDF.load(StringIO(skeleton.to_string()))
 
     # normal URDF
-    robot = yourdfpy.URDF.load(args.path)
+    robot = yourdfpy.URDF.load(path)
 
-    server = viser.ViserServer()
+    server = viser.ViserServer(host=args.ip, port=args.port)
     server.gui.configure_theme(control_width="large")
 
     robot_base = server.scene.add_frame(
@@ -79,7 +94,7 @@ def main():
         def update_scale(_):
             nonlocal skeleton
             skeleton = URDFSkeleton.from_file(
-                args.path,
+                path,
                 link_radius=link_radius_slider.value,
                 joint_radius=joint_radius_slider.value,
                 joint_length=joint_length_slider.value,
