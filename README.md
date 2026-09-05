@@ -40,7 +40,7 @@ viewurdf --ip 192.168.10.10 --port 8888 <file.urdf>
 # visualize a description from robot_descriptions.py:
 viewurdf -r <name>
 
-# don't open automatically open a browser tab with the visualization:
+# don't automatically open a browser tab with the visualization:
 viewurdf --no-open <file.urdf>
 ```
 
