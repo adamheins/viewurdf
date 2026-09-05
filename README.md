@@ -33,6 +33,15 @@ viewurdf <file.urdf>
 # skeleton mode: if you don't have all the assets referenced in the URDF
 # you can also toggle this on/off after starting
 viewurdf -s <file.urdf>
+
+# specify different host IP and port:
+viewurdf --ip 192.168.10.10 --port 8888 <file.urdf> 
+
+# visualize a description from robot_descriptions.py:
+viewurdf -r <name>
+
+# don't open automatically open a browser tab with the visualization:
+viewurdf --no-open <file.urdf>
 ```
 
 ## License
