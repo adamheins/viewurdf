@@ -2,6 +2,7 @@ import argparse
 import importlib
 from io import StringIO
 import time
+import webbrowser
 
 import numpy as np
 from robot_descriptions._xacro import get_urdf_path
@@ -26,6 +27,7 @@ def main():
     )
     parser.add_argument("--ip", default="0.0.0.0", help="IP address to serve visualizer on.")
     parser.add_argument("-p", "--port", default="8080", help="Port to serve visualizer on.")
+    parser.add_argument("--no-open", action="store_true", help="Do not automatically open the visualizer in a browser tab.")
     args = parser.parse_args()
 
     if args.robot_description:
@@ -43,6 +45,10 @@ def main():
 
     server = viser.ViserServer(host=args.ip, port=args.port)
     server.gui.configure_theme(control_width="large")
+
+    if not args.no_open:
+        url = f"http://{args.ip}:{args.port}"
+        webbrowser.open_new_tab(url)
 
     robot_base = server.scene.add_frame(
         "/robot", show_axes=True, axes_length=0.5, axes_radius=0.005
